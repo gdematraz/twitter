@@ -1,0 +1,13 @@
+table, td, th {
+    border-collapse: collapse;
+    border: 1px solid lightgray;
+}
+
+td, th {
+    padding: 5px;
+}
+
+textarea.tweet {
+    width: 400px;
+    height: 200px;
+}

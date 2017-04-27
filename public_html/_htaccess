@@ -1,0 +1,4 @@
+SetEnv DB_SERVER localhost
+SetEnv DB_USER cpnv
+SetEnv DB_PASSWORD cpnv1234
+SetEnv DB_NAME infosec
