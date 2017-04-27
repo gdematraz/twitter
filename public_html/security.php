@@ -11,13 +11,10 @@ class Security
     public static function input($data)
     {
         // On regarde si le type de string est un nombre entier (int)
-        if(ctype_digit($data))
-        {
+        if (ctype_digit($data)) {
             $data = intval($data);
-        }
-        // Pour tous les autres types
-        else
-        {
+        } // Pour tous les autres types
+        else {
             $data = mysql_real_escape_string($data);
             $data = addcslashes($data, '%_');
         }

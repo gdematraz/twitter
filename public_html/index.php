@@ -2,6 +2,7 @@
 require_once "db.php";
 require_once "log.php";
 require_once "user.php";
+require_once "security.php";
 
 session_start();
 
@@ -19,21 +20,21 @@ else {
     $logout     = isset($_GET["logout"]);
 
     $username   = isset($_POST["username"])
-                  ? $_POST["username"]
+                  ? security::input($_POST["username"])
                   : '';
 
     $password   = isset($_POST["password"])
-                  ? $_POST["password"]
+                  ? security::input($_POST["password"])
                   : '';
 
     $message    = isset($_POST['message'])
-                  ? $_POST['message']
+                  ? security::input($_POST['message'])
                   : false;
 
-    $delete     = isset($_GET['method']) && $_GET['method'] === 'delete';
+    $delete     = isset($_GET['method']) && security::input($_GET['method']) === 'delete';
 
     $message_id = isset($_GET['id'])
-                  ? $_GET['id']
+                  ? security::input($_GET['id'])
                   : false;
 
     $user = null;
