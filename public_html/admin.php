@@ -152,7 +152,7 @@ if (!$mysqli) {
         </form>
 
 <?php else : ?>
-	<p class="error">Vous n'êtes pas admin</p>
+	<p class="error" style="color: red">Vous n'êtes pas admin</p>
 <?php endif; ?>
 
     </body>

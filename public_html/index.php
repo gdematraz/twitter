@@ -60,6 +60,7 @@ else {
 
             if ($loggedIn) {
                 loginUser($user['id']);
+                security::generateToken($user['id']);
             } else {
                 array_push($errors, "Invalid username/password");
             }
@@ -68,7 +69,7 @@ else {
             array_push($errors, "Invalid username/password");
         }
 
-    } elseif (getCurrentUserId() !== false) {
+    } elseif (getCurrentUserId() !== false && security::hasValidToken(time(), $user['id'])) {
 
         // On passe ici si une session est ouverte
         $user = getUserById($mysqli, getCurrentUserId());
@@ -107,8 +108,8 @@ else {
     <h1>Hey, this is my twitter !</h1>
 
     <div>
-
-<?php if (getCurrentUserId() !== false) : ?>
+<?php $userId = getCurrentUserId(); ?>
+<?php if ($userId !== false && security::hasValidToken(time(), $userId)) : ?>
 
         <p>
             Welcome <?php echo security::output($user['username']) ?> |

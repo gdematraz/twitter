@@ -52,19 +52,16 @@ class Security
     /**
      * Cette fonction vérifie le token
      * @param $time
-     * @param $referer
      * @param string $name
      * @return bool
      */
-    public static function hasValidToken($time, $referer, $name = '')
+    public static function hasValidToken($time, $name = '')
     {
         session_start();
-        if (isset($_SESSION[$name . '_token']) && isset($_SESSION[$name . '_token_time']) && isset($_POST['token'])) {
-            if ($_SESSION[$name . '_token'] == $_POST['token']) {
+        if (isset($_SESSION[$name . '_token']) && isset($_SESSION[$name . '_token_time'])) {
+            if ($_SESSION[$name . '_token']) {
                 if ($_SESSION[$name . '_token_time'] >= (time() - $time)) {
-                    if ($_SERVER['HTTP_REFERER'] == $referer) {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }
