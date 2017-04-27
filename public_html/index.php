@@ -2,6 +2,7 @@
 require_once "db.php";
 require_once "log.php";
 require_once "user.php";
+require_once "security.php";
 
 session_start();
 
@@ -16,24 +17,27 @@ else {
 
     // Lecture des parametres. La suite depend de la presence ou
     // non de ces parametres.
-    $logout     = isset($_GET["logout"]);
+    $logout     = false;
+    if(isset($_GET["logout"]) && security::input($mysqli, $_GET["logout"]) === 1) {
+        $logout = true;
+    }
 
     $username   = isset($_POST["username"])
-                  ? $_POST["username"]
+                  ? security::input($mysqli, $_POST["username"])
                   : '';
 
     $password   = isset($_POST["password"])
-                  ? $_POST["password"]
+                  ? security::input($mysqli, $_POST["password"])
                   : '';
 
     $message    = isset($_POST['message'])
-                  ? $_POST['message']
+                  ? security::input($mysqli, $_POST['message'])
                   : false;
 
-    $delete     = isset($_GET['method']) && $_GET['method'] === 'delete';
+    $delete     = isset($_GET['method']) && security::input($mysqli, $_GET['method']) === 'delete';
 
     $message_id = isset($_GET['id'])
-                  ? $_GET['id']
+                  ? security::input($mysqli, $_GET['id'])
                   : false;
 
     $user = null;
@@ -56,6 +60,7 @@ else {
 
             if ($loggedIn) {
                 loginUser($user['id']);
+                security::generateToken($user['id']);
             } else {
                 array_push($errors, "Invalid username/password");
             }
@@ -64,7 +69,7 @@ else {
             array_push($errors, "Invalid username/password");
         }
 
-    } elseif (getCurrentUserId() !== false) {
+    } elseif (getCurrentUserId() !== false && security::hasValidToken(time(), $user['id'])) {
 
         // On passe ici si une session est ouverte
         $user = getUserById($mysqli, getCurrentUserId());
@@ -103,11 +108,11 @@ else {
     <h1>Hey, this is my twitter !</h1>
 
     <div>
-
-<?php if (getCurrentUserId() !== false) : ?>
+<?php $userId = getCurrentUserId(); ?>
+<?php if ($userId !== false && security::hasValidToken(time(), $userId)) : ?>
 
         <p>
-            Welcome <?php echo $user['username'] ?> |
+            Welcome <?php echo security::output($user['username']) ?> |
             <a href="index.php?logout=1">logout</a>
         </p>
 
@@ -156,7 +161,7 @@ else {
     <?php foreach ($errors as $error) : ?>
 
             <div class="error">
-                <?php echo $error ?>
+                <?php echo security::output($error) ?>
             </div>
 
     <?php endforeach; ?>
@@ -167,20 +172,20 @@ else {
 
             <div>
                 <div class="author">
-                    Auteur: <?php echo $message['Author'] ?>
+                    Auteur: <?php echo security::output($message['Author']) ?>
                 </div>
 
         <?php if ($message['AuthorId'] == getCurrentUserId()) : ?>
 
-                    <div><a href="index.php?method=delete&id=<?php echo $message['MessageId'] ?>">delete</a></div>
+                    <div><a href="index.php?method=delete&id=<?php echo security::output($message['MessageId']) ?>">delete</a></div>
 
         <?php endif; ?>
 
                 <div class="message">
                     <span class="message-id">
-                        [<?= $message['MessageId'] ?>]
+                        [<?= security::output($message['MessageId']) ?>]
                     </span>
-                    <?php echo $message['Message'] ?>
+                    <?php echo security::output($message['Message']) ?>
                 </div>
             </div>
             <hr>

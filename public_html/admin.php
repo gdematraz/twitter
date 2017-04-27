@@ -2,6 +2,7 @@
 require_once "log.php";
 require_once "db.php";
 require_once "user.php";
+require_once "security.php";
 
 session_start();
 
@@ -20,11 +21,11 @@ if (!$mysqli) {
 } else {
 
     $method = isset($_GET['action'])
-              ? $_GET['action']
+              ? security::input($mysqli, $_GET['action'])
               : false;
 
     $id     = isset($_GET['id'])
-              ? $_GET['id']
+              ? security::input($mysqli, $_GET['id'])
               : false;
 
 
@@ -40,16 +41,17 @@ if (!$mysqli) {
     } else {
 
         $username = isset($_POST['username'])
-                    ? $_POST['username']
+                    ? security::input($mysqli, $_POST['username'])
                     : false;
 
         $password = isset($_POST['password'])
-                    ? $_POST['password']
+                    ? security::input($mysqli, $_POST['password'])
                     : false;
 
-        $admin    = isset($_POST['admin'])
-                    ? 1
-                    : 0;
+        $admin = false;
+        if(isset($_POST["admin"]) && security::input($mysqli, $_POST["admin"]) === 1) {
+            $admin = true;
+        }
 
         if ($username && $password) {
 
@@ -76,7 +78,7 @@ if (!$mysqli) {
         <h1>Admin</h1>
         <p>Cette page ne doit etre visible que par les admin</p>
         <p>
-            Et vous êtes : <?= $current_user['username'] ?>
+            Et vous êtes : <?= security::output($current_user['username']) ?>
         </p>
         <p><a href="admin.php?action=logout">logout</a></p>
 
@@ -84,12 +86,12 @@ if (!$mysqli) {
 
     <?php foreach ($errors as $error) : ?>
 
-        <div class="error"><?php echo $error ?></div>
+        <div class="error"><?php echo security::output($error) ?></div>
 
     <?php endforeach; ?>
 
 
-<?php else : ?>
+<?php elseif (isAdmin($current_user)) : ?>
 
         <table>
             <thead>
@@ -105,11 +107,11 @@ if (!$mysqli) {
     <?php foreach ($users as $user) : ?>
 
                 <tr>
-                    <td><?php echo $user['id']; ?></td>
-                    <td><?php echo $user['username']; ?></td>
-                    <td><?php echo $user['role']; ?></td>
+                    <td><?php echo security::output($user['id']); ?></td>
+                    <td><?php echo security::output($user['username']); ?></td>
+                    <td><?php echo security::output($user['role']); ?></td>
                     <td>
-                        <a href="admin.php?action=delete&id=<?php echo $user['id'] ?>">
+                        <a href="admin.php?action=delete&id=<?php echo security::output($user['id']) ?>">
                             delete
                         </a>
                     </td>
@@ -149,6 +151,8 @@ if (!$mysqli) {
             </fieldset>
         </form>
 
+<?php else : ?>
+	<p class="error" style="color: red">Vous n'êtes pas admin</p>
 <?php endif; ?>
 
     </body>

@@ -1,5 +1,7 @@
 <?php
 
+require_once("security.php");
+
 function connect()
 {
     require_once "log.php";
@@ -74,6 +76,7 @@ function updateUserPassword($mysqli, $id, $password)
 {
     require_once "log.php";
 
+    $password = security::encrypt($password);
     $query = "update user set password = '$password' where id = $id";
 
     if (!$mysqli->query($query)) {
@@ -88,7 +91,8 @@ function addUser($mysqli, $username, $password, $role)
 {
     require_once "log.php";
 
-    $query = "insert into user (username, password, role) values ('$username', '$password', $role)";
+    $password = security::encrypt($password);
+    $query = "insert into user (username, password, role) values ('$username', '$password', '$role')";
 
     if (!$mysqli->query($query)) {
         log_error(__FILE__, "Execute failed: " . $mysqli->error);

@@ -27,7 +27,8 @@ function killSession()
 
 function authenticate($user, $password)
 {
-    return $password === $user['password'];
+    return hash_equals($user['password'], crypt($password, $user['password']));;
+
 }
 
 function isAdmin($user)
