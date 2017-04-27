@@ -17,7 +17,10 @@ else {
 
     // Lecture des parametres. La suite depend de la presence ou
     // non de ces parametres.
-    $logout     = isset($_GET["logout"]);
+    $logout     = false;
+    if(isset($_GET["logout"]) && security::input($_GET["logout"]) === 1) {
+        $logout = true;
+    }
 
     $username   = isset($_POST["username"])
                   ? security::input($_POST["username"])
