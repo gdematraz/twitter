@@ -41,16 +41,17 @@ if (!$mysqli) {
     } else {
 
         $username = isset($_POST['username'])
-                    ? $_POST['username']
+                    ? security::input($mysqli, $_POST['username'])
                     : false;
 
         $password = isset($_POST['password'])
-                    ? $_POST['password']
+                    ? security::input($mysqli, $_POST['password'])
                     : false;
 
-        $admin    = isset($_POST['admin'])
-                    ? 1
-                    : 0;
+        $admin = false;
+        if(isset($_POST["admin"]) && security::input($mysqli, $_POST["admin"]) === 1) {
+            $admin = true;
+        }
 
         if ($username && $password) {
 
