@@ -4,18 +4,19 @@ class Security
 {
 
     /**
-     *
+     * Sécurise une entrée utilisateur
+     * @param $mysqli
      * @param $data
      * @return int|string
      */
-    public static function input($data)
+    public static function input($mysqli, $data)
     {
         // On regarde si le type de string est un nombre entier (int)
         if (ctype_digit($data)) {
             $data = intval($data);
         } // Pour tous les autres types
         else {
-            $data = mysql_real_escape_string($data);
+            $data = $mysqli->real_escape_string($data);
             $data = addcslashes($data, '%_');
         }
 
@@ -68,6 +69,15 @@ class Security
             }
         }
         return false;
+    }
+
+    /**
+     * @param $message
+     * @return string
+     */
+    public static function encrypt($message)
+    {
+        return crypt($message);
     }
 
 

@@ -2,6 +2,7 @@
 require_once "log.php";
 require_once "db.php";
 require_once "user.php";
+require_once "security.php";
 
 session_start();
 
@@ -20,11 +21,11 @@ if (!$mysqli) {
 } else {
 
     $method = isset($_GET['action'])
-              ? $_GET['action']
+              ? security::input($mysqli, $_GET['action'])
               : false;
 
     $id     = isset($_GET['id'])
-              ? $_GET['id']
+              ? security::input($mysqli, $_GET['id'])
               : false;
 
 

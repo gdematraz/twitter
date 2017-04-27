@@ -18,26 +18,26 @@ else {
     // Lecture des parametres. La suite depend de la presence ou
     // non de ces parametres.
     $logout     = false;
-    if(isset($_GET["logout"]) && security::input($_GET["logout"]) === 1) {
+    if(isset($_GET["logout"]) && security::input($mysqli, $_GET["logout"]) === 1) {
         $logout = true;
     }
 
     $username   = isset($_POST["username"])
-                  ? security::input($_POST["username"])
+                  ? security::input($mysqli, $_POST["username"])
                   : '';
 
     $password   = isset($_POST["password"])
-                  ? security::input($_POST["password"])
+                  ? security::input($mysqli, $_POST["password"])
                   : '';
 
     $message    = isset($_POST['message'])
-                  ? security::input($_POST['message'])
+                  ? security::input($mysqli, $_POST['message'])
                   : false;
 
-    $delete     = isset($_GET['method']) && security::input($_GET['method']) === 'delete';
+    $delete     = isset($_GET['method']) && security::input($mysqli, $_GET['method']) === 'delete';
 
     $message_id = isset($_GET['id'])
-                  ? security::input($_GET['id'])
+                  ? security::input($mysqli, $_GET['id'])
                   : false;
 
     $user = null;
@@ -111,7 +111,7 @@ else {
 <?php if (getCurrentUserId() !== false) : ?>
 
         <p>
-            Welcome <?php echo $user['username'] ?> |
+            Welcome <?php echo security::output($user['username']) ?> |
             <a href="index.php?logout=1">logout</a>
         </p>
 
@@ -160,7 +160,7 @@ else {
     <?php foreach ($errors as $error) : ?>
 
             <div class="error">
-                <?php echo $error ?>
+                <?php echo security::output($error) ?>
             </div>
 
     <?php endforeach; ?>
@@ -171,20 +171,20 @@ else {
 
             <div>
                 <div class="author">
-                    Auteur: <?php echo $message['Author'] ?>
+                    Auteur: <?php echo security::output($message['Author']) ?>
                 </div>
 
         <?php if ($message['AuthorId'] == getCurrentUserId()) : ?>
 
-                    <div><a href="index.php?method=delete&id=<?php echo $message['MessageId'] ?>">delete</a></div>
+                    <div><a href="index.php?method=delete&id=<?php echo security::output($message['MessageId']) ?>">delete</a></div>
 
         <?php endif; ?>
 
                 <div class="message">
                     <span class="message-id">
-                        [<?= $message['MessageId'] ?>]
+                        [<?= security::output($message['MessageId']) ?>]
                     </span>
-                    <?php echo $message['Message'] ?>
+                    <?php echo security::output($message['Message']) ?>
                 </div>
             </div>
             <hr>
