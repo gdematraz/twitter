@@ -78,7 +78,7 @@ if (!$mysqli) {
         <h1>Admin</h1>
         <p>Cette page ne doit etre visible que par les admin</p>
         <p>
-            Et vous êtes : <?= $current_user['username'] ?>
+            Et vous êtes : <?= security::output($current_user['username']) ?>
         </p>
         <p><a href="admin.php?action=logout">logout</a></p>
 
@@ -86,7 +86,7 @@ if (!$mysqli) {
 
     <?php foreach ($errors as $error) : ?>
 
-        <div class="error"><?php echo $error ?></div>
+        <div class="error"><?php echo security::output($error) ?></div>
 
     <?php endforeach; ?>
 
@@ -107,11 +107,11 @@ if (!$mysqli) {
     <?php foreach ($users as $user) : ?>
 
                 <tr>
-                    <td><?php echo $user['id']; ?></td>
-                    <td><?php echo $user['username']; ?></td>
-                    <td><?php echo $user['role']; ?></td>
+                    <td><?php echo security::output($user['id']); ?></td>
+                    <td><?php echo security::output($user['username']); ?></td>
+                    <td><?php echo security::output($user['role']); ?></td>
                     <td>
-                        <a href="admin.php?action=delete&id=<?php echo $user['id'] ?>">
+                        <a href="admin.php?action=delete&id=<?php security::output(echo $user['id']) ?>">
                             delete
                         </a>
                     </td>
