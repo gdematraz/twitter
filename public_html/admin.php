@@ -111,7 +111,7 @@ if (!$mysqli) {
                     <td><?php echo security::output($user['username']); ?></td>
                     <td><?php echo security::output($user['role']); ?></td>
                     <td>
-                        <a href="admin.php?action=delete&id=<?php security::output(echo $user['id']) ?>">
+                        <a href="admin.php?action=delete&id=<?php echo security::output($user['id']) ?>">
                             delete
                         </a>
                     </td>
