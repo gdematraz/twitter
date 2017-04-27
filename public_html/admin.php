@@ -91,7 +91,7 @@ if (!$mysqli) {
     <?php endforeach; ?>
 
 
-<?php else : ?>
+<?php elseif (isAdmin($current_user)) : ?>
 
         <table>
             <thead>
@@ -151,6 +151,8 @@ if (!$mysqli) {
             </fieldset>
         </form>
 
+<?php else : ?>
+	<p class="error">Vous n'êtes pas admin</p>
 <?php endif; ?>
 
     </body>
